@@ -1,0 +1,96 @@
+var model={
+	instruction1: 'Step:1 Click on the beaker to take into experiment table.',
+	instruction2:'Step:2 Add required quantity of agar-agar powder to the beaker for the preparation of a 1.0%'
+	+ 'agar-agar aqueous solution. [Click on the agar container’s spoon to transfer',
+	instruction3:'Step:3 Add required volume of (1x TBE (Tris-Borate-EDTA), pH 8.6) buffer solution'
+	+'[by clicking on the buffer container].',
+	instruction4:'Step:4 Click on the watch glass to cover the top of the beaker with a wrap loosely'+
+	'to prevent the solution from boiling over.',
+	instruction5:'Step:5 Place the beaker in the microwave oven [by clicking on the beaker]. In real operation,'+ 
+	'one should adjust time and power settings according to the oven output strength.'+
+	'Alternatively, the solution can be heated on a hot plate or over a Bunsen burner.',
+	instruction6:'Step:6 Remove the beaker at regular intervals from the microwave oven, swirl it gently,'+
+	'heat again by placing it back in the oven until the agar melts completely.',
+	instruction7:'Step:7 Remove the wrap. Pour about half of the hot solution in the mould[by clicking on the beaker].',
+	instruction8:'Step:8 Place an appropriate thermometer in the in the beaker containing half of the hot solution.'
+	+'[by clicking on the thermometer]',
+	instruction9:'Step:9 Remove the wrap. Pour about half of the hot solution in the mould [by clicking on the beaker].'+
+	'In order to avoid bubble formation and warping of casting tray, one should cool the solution to ~60°C'+ 
+	'(until the beaker is just comfortable to touch) and pour it carefully into the gel mould.',
+	instruction10:'Step:10 Place an appropriate thermometer in the in the beaker containing half of the hot solution.',
+	instruction11:'Step:11 Place the beaker containing gel in a water bath at 70°C for 1 h.[by clicking on the beaker].',
+	instruction12:'Step:12 Increase the temperature of the water bath to 90°C, and observe the gel melting temperature'+
+	'when the gel in the beaker is liquefied forming a clear solution. The melting temperature is marked down as the'+ 
+	'midpoint between the last time (temperature) when there was no flow and first time when there is flow of the agar sample'+
+	'on tumbling the beaker. If one observes the sample carefully, one may recognise the gel melting temperature visually too.',
+}
+
+var view ={
+	// addClickEvent: add EventListener to other methods.
+	addClickevents: function(id, method){
+		var element = document.getElementById(id);
+		element.addEventListener('click', method, false);
+
+	},
+	// activateEvents: calls addClickEvent method to add EventListener to other methods.
+	activateEvents: function(){
+		this.addClickevents('reset_btn', function() { view.resetPage() } )
+		// this.addClickevents('beaker', function() { view.animateElements('beaker',1, 0.4, 310) } );
+		// this.addClickevents('gel_mold', function() { view.animateElements('gel_mold',1, 0.4, 310) } );
+		// this.addClickevents('watch_glass', function() { view.moveElements() } );
+		// this.addClickevents('thermometer', function() { view.moveElements() } );
+		// this.addClickevents('micro_wave', function() { view.moveElements() } );
+		this.addClickevents('beaker', function() { view.animateElements('beaker','344', '395') } );
+
+	},
+	// resetPage: Resets page on clicling the reset button.
+	resetPage: function(){
+		location.reload();
+	},
+	// setInnerHtml: set innerText to a element.
+	setInnerHTML: function (id, innerHTML) {
+		document.getElementById(id).innerHTML = innerHTML;
+	},
+	//animateElements: calls setInnerhtml method and sets the instruction. Calls animate method and moves the beaker.
+	// animateElements: function(id, step_top, step_left,value){
+	// 	this.setInnerHTML('instruction', model.instruction2);
+	// 	var elem = document.getElementById(id);   
+	// 	// Detect the current position of the beaker.
+ //        initial_top = Math.round($('#'+id).position().top);
+ //        initial_left = Math.round($('#'+id).position().left);
+ //        final_top = value;
+	// 	var id = setInterval(frame, 5);
+	// 	function frame() {
+	// 		if (initial_top > final_top) {
+	// 	      clearInterval(id);
+	// 	    } else {
+	// 	      initial_top+=step_top; 
+ //              initial_left+=step_left;
+	// 	      elem.style.top = initial_top + 'px'; 
+ //              elem.style.left = initial_left + 'px'; 
+	// 	    }
+	// 	}
+	// },
+	animateElements:function(id,top,left){
+		$('#'+id).animate({top: top+'px', left: left+'px'},1500);
+	},
+	showInstruction: function(){
+		this.setInnerHTML('instruction', model.instruction1); 
+	},
+	hide: function(id){
+		document.getElementById(id).style.visibility = 'hidden';
+	},
+	hideImages:function(){
+		this.hide('restart');
+	},
+	init:function(){
+		this.showInstruction();
+		this.activateEvents();
+		this.hideImages();
+	}
+}
+
+// onload function: call init method on window onload.
+window.onload=function() {
+	view.init();
+}
