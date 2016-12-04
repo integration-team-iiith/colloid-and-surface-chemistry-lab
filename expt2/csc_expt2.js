@@ -24,10 +24,12 @@ var model={
 	'when the gel in the beaker is liquefied forming a clear solution. The melting temperature is marked down as the'+ 
 	'midpoint between the last time (temperature) when there was no flow and first time when there is flow of the agar sample'+
 	'on tumbling the beaker. If one observes the sample carefully, one may recognise the gel melting temperature visually too.',
+	image: ['images/s1.png', 'images/s2.png', 'images/s3.png', 'images/spatula2.png']
 }
 
 var view ={
 	step_no : 0,
+	image_index: 0,
 	//count = 0;
 	// enableElement: makes element disable.
 	enableElement: function(Id) {
@@ -68,6 +70,11 @@ var view ={
 		var element = document.getElementById(id);
 		element.src = image;
 	},
+	//addClassName: adds class properties to elements on calling this method.
+	addClassName: function(id, classname){
+		var element = document.getElementById(id);
+		element.className = classname;
+	},
 	// activateEvents: calls addClickEvent method to add EventListener to other methods.
 	activateEvents: function() {
 		this.addClickEvent('reset_btn', function() { view.resetPage(); });
@@ -77,7 +84,7 @@ var view ={
 		this.addClickEvent('spatula', function() { view.moveSpatula(); });
 		// this.addClickEvent('gel_mold', function() { view.stopExperiment() });
 		// this.addClickEvent('watch_glass', function() { view.stopExperiment() });
-		// this.addClickEvent('bottle', function() { view.stopExperiment() });
+		this.addClickEvent('bottle', function() { view.moveBuffer(); });
 		// this.addClickEvent('thermometer', function() { view.stopExperiment() });
 		// this.addClickEvent('micro_wave', function() { view.stopExperiment() });
 		// this.addClickEvent('restart', function() { view.stopExperiment() });
@@ -92,6 +99,8 @@ var view ={
 		this.hideElements('spatula');
 		this.hideElements('cap');
 		this.hideElements('open_bottle');
+		this.hideElements('buffer_cap');
+		this.hideElements('buffer');
 	},
 	//fade Elements
 	fadeElements: function(id){
@@ -103,20 +112,40 @@ var view ={
 		location.reload();
 	},
 	//animateElements: calls setInnerhtml method and sets the instruction. Calls animate method and moves the beaker.
-	animateElements:function(id,top,left){
+	animateElements: function(id,top,left){
 		$('#'+id).animate({
-			top: '+='+top+'%', 
+			top: top+'%', 
+			left: left+'%'
+		}, {
+			duration: 1500
+		});
+	},
+	animateElements1: function(id,top,left){
+		$('#'+id).animate({
+			top: '-='+top+'%'
+		}, {
+			duration: 1500
+		})
+				.animate({
 			left: '+='+left+'%'
 		}, {
 			duration: 1500
 		});
 	},
-
+	//changeImages: replaces images for every 5 milli seconds on calling this method.
+	changeImages: function(id){
+		var element = document.getElementById(id);
+		element.src = model.image[this.image_index];
+        this.image_index++;
+  		if(this.image_index > model.image.length){
+    		clearInterval(id1);
+  		}
+	},
 	// Moves beaker
 	moveBeaker: function(){
 		if(this.step_no == 0){
 			this.setInnerHTML('instruction', model.instruction2);
-			this.animateElements('beaker',60, 8);
+			this.animateElements('beaker','+='+60, '+='+8);
 			this.unsetCursor('beaker');
 			this.setCursor('solution');
 			this.step_no++;
@@ -125,22 +154,23 @@ var view ={
 	// Moves bottle
 	movesolBottle: function(){
 		if(this.step_no == 1) {
-			if(!$('*').is(':animated')){
+			if(!$('#beaker').is(':animated')){
 				this.setInnerHTML('instruction', model.instruction3);
-				this.animateElements('solution',60, 6);
+				this.animateElements('solution','+='+60, '+='+6);
 				this.unsetCursor('solution');
 				this.step_no++;
 				setTimeout(function(){
 					view.hideElements('solution');
 					view.showElements('cap');
 					view.showElements('open_bottle');
-					view.animateElements('cap',12, 4);
+					//view.addClassName('cap','rotate');
+					view.animateElements('cap','+='+12, '+='+4);
 				}, 2000);
 				setTimeout(function(){
 					view.showElements('spatula');
 					view.unsetCursor('solution');
 					view.setCursor('spatula');
-					view.animateElements('spatula',10, 0);
+					view.animateElements('spatula','+='+10, '+='+0);
 					view.showElements('spatula');
 					view.showElements('instruction_box');
 					view.showElements('hand_cursor');
@@ -155,9 +185,70 @@ var view ={
 	//movespatuala
 	moveSpatula: function(){
 		if(this.step_no == 2){
-			this.replaceElements('spatula', 'images/spatula_with_sol.png');
+			if(!$('#solution').is(':animated')){
+				this.replaceElements('spatula', 'images/spatula_with_sol3.png');
+				this.animateElements1('spatula', 10 , 10);
+				this.hideElements('hand_cursor');
+				setTimeout(function(){
+					id1=setInterval(view.changeImages('spatula'), 50);
+					view.replaceElements('beaker', 'images/beaker1.png');
+				}, 4000);
+				setTimeout(function(){
+					view.animateElements('spatula', '+='+0, '+='+20);
+					view.hideElements('instruction_box');
+				}, 5000);
+				setTimeout(function(){
+					view.hideElements('spatula');
+				}, 6000);
+				setTimeout(function(){
+					view.animateElements('cap', '-='+12, '-='+4);
+				}, 7000);
+				setTimeout(function(){
+					view.hideElements('cap');
+					view.hideElements('open_bottle');
+					view.showElements('solution');
+					view.animateElements('solution', '-='+60, '-='+6);
+					view.unsetCursor('spatula');
+					view.setCursor('bottle');
+				}, 8000);
+				this.step_no++;
+			}
 		}
 	},
+
+	//moveBuffer
+	moveBuffer: function(){
+		if(this.step_no == 3){
+			//if(!$('*').is(':animated')){
+				this.setInnerHTML('instruction', model.instruction4);
+				this.animateElements('bottle', '+='+60, '-='+25);
+				view.unsetCursor('bottle');
+				view.setCursor('watch_glass');
+				this.step_no++;
+				setTimeout(function(){
+					view.hideElements('bottle');
+					view.showElements('buffer_cap');
+					view.showElements('buffer');
+					view.animateElements('buffer_cap','+='+12, '-='+4);
+				}, 2000);
+				setTimeout(function(){
+					//view.changeImages('buffer');
+					// view.changeImages('beaker');
+				},4000);
+				setTimeout(function(){
+					view.animateElements('buffer_cap', '-='+12, '+='+4);
+				},6000);
+				setTimeout(function(){
+					view.hideElements('buffer_cap');
+					view.hideElements('buffer');
+					view.showElements('bottle');
+					view.animateElements('bottle', '-='+60, '+='+25);
+				},8000);
+
+			//}
+		}
+	},
+
 	// init: calls methods to set instructions and activate events.
 	init:function(){
 		this.activateEvents();

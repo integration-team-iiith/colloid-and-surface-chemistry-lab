@@ -24,8 +24,9 @@ h3{
 
 #beaker{
 	position: absolute;
-	top:4%;
+	top:2%;
 	left:33.5%;
+	height: 15%;
 }
 
 #gel_mold{
@@ -71,8 +72,8 @@ h3{
 
 #spatula{
 	position: absolute;
-	left:35.2%;
-	top:43%;
+	left:35.1%;
+	top: 45%;
 	width: 0.9%;
 	-ms-transform: rotate(26deg); /* IE 9 */
     -webkit-transform: rotate(26deg); /* Chrome, Safari, Opera */
@@ -91,6 +92,20 @@ h3{
 	width: 3%;
 	top: 61%;
 	left: 33%;
+}
+
+#buffer{
+	position: absolute;
+	width: 3%;
+	top: 63%;
+	left: 36%;
+}
+
+#buffer_cap{
+	position: absolute;
+	width: 1.8%;
+	top:60.5%;
+	left:36.5%;
 }
 
 #hand_cursor{
@@ -112,4 +127,11 @@ h3{
 	font-weight: bold;
 	color:brown;
 	max-width: 50%;
+}
+
+.rotate {
+    /* Rotate element*/
+    -ms-transform: rotate(7deg); /* IE 9 */
+    -webkit-transform: rotate(7deg); /* Chrome, Safari, Opera */
+    transform: rotate(7deg);
 }
